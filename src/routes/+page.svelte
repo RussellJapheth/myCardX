@@ -1,44 +1,101 @@
 <script>
+	import { writable } from 'svelte/store';
+	import Navbar from './Navbar.svelte';
 	import { cards, shuffle } from './cards';
 	import 'animate.css';
 
-	/**
-	 * @type {{question: string, hint: string|null, answer: string}|null}
-	 */
-	let currentCard = null;
+	// /**
+	//  * @type {{question: string, hint: string|null, answer: string}|null}
+	//  */
+	// let currentCard = null;
 
-	let currentCardIndex = 0;
+	// /**
+	//  * @type {Array.<number>}
+	//  */
+	// let cardsList = [];
 
-	let showAnswer = false;
+	// let currentCardIndex = 0;
 
-	let learnMode = false;
+	// let showAnswer = false;
 
-	if ($cards.length) {
-		$cards = shuffle($cards);
-		currentCard = $cards[0];
+	const storedOptions = localStorage.getItem('options');
+
+	const options = writable(
+		storedOptions
+			? JSON.parse(storedOptions)
+			: {
+					learnMode: false,
+					enableShuffle: false,
+					enableAutoplay: false,
+					saved: [],
+					state: {
+						currentCard: null,
+						cardsList: [],
+						currentCardIndex: 0,
+						showAnswer: true,
+						isSavedState: false
+					}
+			  }
+	);
+
+	options.subscribe((value) => {
+		value.isSavedState = true;
+		localStorage.setItem('options', JSON.stringify(value));
+	});
+
+	const toggleShuffle = () => {
+		if ($options.enableShuffle) {
+			$options.state.cardsList = shuffle($options.state.cardsList);
+		} else {
+			$options.state.cardsList = Array.from($cards.keys());
+		}
+		$options.state.currentCardIndex = 0;
+		$options.state.currentCard = $cards[$options.state.cardsList[0]];
+	};
+
+	const toggleAutoplay = () => {
+		// setTimeout(() => {
+		// 	document.getElementById('flipper-next')?.click();
+		// }, 5000);
+	};
+
+	if (
+		$options.state.cardsList.length !== $cards.length ||
+		($cards.length && !$options.isSavedState)
+	) {
+		$options.state.cardsList = Array.from($cards.keys());
+		if ($options.enableShuffle) {
+			$options.state.cardsList = shuffle($options.state.cardsList);
+		}
+
+		$options.state.currentCard = $cards[$options.state.cardsList[0]];
 	}
 </script>
 
-<main class="flex items-center bg-info justify-center min-h-screen px-5">
+<Navbar {options} {toggleShuffle} {toggleAutoplay} />
+<main class="flex items-center bg-info justify-center min-h-[90vh] px-5">
 	<section>
-		{#if currentCard}
+		{#if $options.state.currentCard}
 			<div
 				id="flipper"
-				class="card animate__animated w-full min-h-[20vh] max-w-md bg-base-100 shadow-xl"
+				class="card animate__animated w-[90vw] min-h-[20vh] max-w-md bg-base-100 shadow-xl"
 			>
 				<div class="card-body">
-					<h2 class="card-title">{currentCard.question}</h2>
-					<p>{currentCard.hint}</p>
-					<p class="capitalize" class:hidden={!showAnswer && !learnMode}>{currentCard.answer}</p>
+					<h2 class="card-title">{$options.state.currentCard.question}</h2>
+					<p>{$options.state.currentCard.hint}</p>
+					<p class="capitalize" class:hidden={!$options.state.showAnswer && !$options.learnMode}>
+						{$options.state.currentCard.answer}
+					</p>
 				</div>
 			</div>
 			<div class="flex mt-3 justify-between gap-3">
-				{#if currentCardIndex > 0}
+				{#if $options.state.currentCardIndex > 0}
 					<button
 						on:click={() => {
-							currentCardIndex--;
-							currentCard = $cards[currentCardIndex];
-							showAnswer = false;
+							$options.state.currentCardIndex--;
+							$options.state.currentCard =
+								$cards[$options.state.cardsList[$options.state.currentCardIndex]];
+							$options.state.showAnswer = false;
 							document.getElementById('flipper')?.classList.add('animate__fadeIn');
 							setTimeout(() => {
 								document.getElementById('flipper')?.classList.remove('animate__fadeIn');
@@ -50,24 +107,26 @@
 					<button class="btn" disabled>Previous</button>
 				{/if}
 
-				{#if !learnMode}
+				{#if !$options.learnMode}
 					<button
 						on:click={() => {
-							showAnswer = !showAnswer;
+							$options.state.showAnswer = !$options.state.showAnswer;
 							document.getElementById('flipper')?.classList.add('animate__flipInX');
 							setTimeout(() => {
 								document.getElementById('flipper')?.classList.remove('animate__flipInX');
 							}, 500);
 						}}
-						class="btn shadow-xl">{showAnswer ? 'Hide' : 'Show'} Answer</button
+						class="btn shadow-xl">{$options.state.showAnswer ? 'Hide' : 'Show'} Answer</button
 					>
 				{/if}
-				{#if currentCardIndex < $cards.length - 1}
+				{#if $options.state.currentCardIndex < $options.state.cardsList.length - 1}
 					<button
+						id="flipper-next"
 						on:click={() => {
-							currentCardIndex++;
-							currentCard = $cards[currentCardIndex];
-							showAnswer = false;
+							$options.state.currentCardIndex++;
+							$options.state.currentCard =
+								$cards[$options.state.cardsList[$options.state.currentCardIndex]];
+							$options.state.showAnswer = false;
 							document.getElementById('flipper')?.classList.add('animate__fadeIn');
 							setTimeout(() => {
 								document.getElementById('flipper')?.classList.remove('animate__fadeIn');
@@ -78,14 +137,6 @@
 				{:else}
 					<button class="btn" disabled>Next</button>
 				{/if}
-			</div>
-			<div style="position: absolute; top: 10px; right: 10px;">
-				<div class="form-control">
-					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">Hey, enable learning mode 🥹 &nbsp;</span>
-						<input type="checkbox" bind:checked={learnMode} class="checkbox-primary checkbox" />
-					</label>
-				</div>
 			</div>
 		{/if}
 	</section>

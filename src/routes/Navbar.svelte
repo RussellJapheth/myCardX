@@ -11,7 +11,12 @@
 	/**
 	 * @type {function}
 	 */
-	export let toggleAutoplay;
+	export let checkAutoplay;
+
+	/**
+	 * @type {function}
+	 */
+	export let resetCards;
 
 	onMount(() => {
 		let didClickMenu = localStorage.getItem('didClickMenu');
@@ -30,7 +35,7 @@
 		<div class="dropdown">
 			<!-- svelte-ignore a11y-label-has-associated-control -->
 			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-			<label tabindex="0" class="btn btn-ghost animate__animated animate__infinite animate__pulse">
+			<label tabindex="0" class="btn btn-ghost animate__animated animate__rubberBand">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="h-5 w-5"
@@ -81,11 +86,22 @@
 							type="checkbox"
 							bind:checked={$options.enableAutoplay}
 							on:change={() => {
-								// toggleAutoplay();
+								checkAutoplay();
 							}}
 							class="checkbox-sm checkbox-primary checkbox"
 						/>
 					</label>
+				</li>
+				<li>
+					<div class="divider" />
+				</li>
+				<li>
+					<button
+						on:click={() => {
+							resetCards();
+						}}
+						class="btn btn-sm btn-accent">Start Over</button
+					>
 				</li>
 			</ul>
 		</div>

@@ -123,7 +123,7 @@
 						<h2 class="card-title">
 							{$options.state.currentCard.question}
 						</h2>
-						<div>
+						<div class="animate__animated animate__shakeX">
 							<label class="swap swap-flip">
 								<!-- this hidden checkbox controls the state -->
 								<input

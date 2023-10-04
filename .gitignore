@@ -11,3 +11,5 @@ vite.config.ts.timestamp-*
 
 # Local Netlify folder
 .netlify
+/.tmp
+/src/lib/json

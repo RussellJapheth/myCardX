@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-export const cards = writable([
+export const hsk1 = writable([
 	{
 		id: 1,
 		hint: '我',

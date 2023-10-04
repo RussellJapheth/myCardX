@@ -18,6 +18,11 @@
 	 */
 	export let resetCards;
 
+	/**
+	 * @type {function}
+	 */
+	export let checkLevels;
+
 	onMount(() => {
 		let didClickMenu = localStorage.getItem('didClickMenu');
 		// if (browser) {
@@ -87,6 +92,87 @@
 							bind:checked={$options.enableAutoplay}
 							on:change={() => {
 								checkAutoplay();
+							}}
+							class="checkbox-sm checkbox-primary checkbox"
+						/>
+					</label>
+				</li>
+				<li>
+					<div class="divider" />
+				</li>
+				<li>
+					<label class="label cursor-pointer">
+						<span class="label-text text-accent-content">HSK1 &nbsp;</span>
+						<input
+							type="checkbox"
+							bind:checked={$options.levels.hsk1}
+							on:change={() => {
+								checkLevels();
+							}}
+							class="checkbox-sm checkbox-primary checkbox"
+						/>
+					</label>
+				</li>
+				<li>
+					<label class="label cursor-pointer">
+						<span class="label-text text-accent-content">HSK2 &nbsp;</span>
+						<input
+							type="checkbox"
+							bind:checked={$options.levels.hsk2}
+							on:change={() => {
+								checkLevels();
+							}}
+							class="checkbox-sm checkbox-primary checkbox"
+						/>
+					</label>
+				</li>
+				<li>
+					<label class="label cursor-pointer">
+						<span class="label-text text-accent-content">HSK3 &nbsp;</span>
+						<input
+							type="checkbox"
+							bind:checked={$options.levels.hsk3}
+							on:change={() => {
+								checkLevels();
+							}}
+							class="checkbox-sm checkbox-primary checkbox"
+						/>
+					</label>
+				</li>
+				<li>
+					<label class="label cursor-pointer">
+						<span class="label-text text-accent-content">HSK4 &nbsp;</span>
+						<input
+							type="checkbox"
+							bind:checked={$options.levels.hsk4}
+							on:change={() => {
+								checkLevels();
+							}}
+							class="checkbox-sm checkbox-primary checkbox"
+						/>
+					</label>
+				</li>
+				<li>
+					<label class="label cursor-pointer">
+						<span class="label-text text-accent-content">HSK5 &nbsp;</span>
+						<input
+							type="checkbox"
+							bind:checked={$options.levels.hsk5}
+							on:change={() => {
+								checkLevels();
+							}}
+							class="checkbox-sm checkbox-primary checkbox"
+						/>
+					</label>
+				</li>
+				<li>
+					<label class="label cursor-pointer">
+						<span class="label-text text-accent-content">HSK6 &nbsp;</span>
+						<input
+							type="checkbox"
+							bind:checked={$options.levels.hsk6}
+							on:change={() => {
+								checkLevels();
 							}}
 							class="checkbox-sm checkbox-primary checkbox"
 						/>

@@ -1,32 +1,41 @@
 <script>
 	import { writable } from 'svelte/store';
 	import Navbar from './Navbar.svelte';
-	import { cards, shuffle } from './cards';
+	import { shuffle } from './cards';
 	import 'animate.css';
+	import { STORED_OPTIONS_VERSION } from '$lib/vars';
+	import hsk1 from '$lib/json/hsk-level-1.json';
+	import hsk2 from '$lib/json/hsk-level-2.json';
+	import hsk3 from '$lib/json/hsk-level-3.json';
+	import hsk4 from '$lib/json/hsk-level-4.json';
+	import hsk5 from '$lib/json/hsk-level-5.json';
+	import hsk6 from '$lib/json/hsk-level-6.json';
+	import hskAll from '$lib/json/hsk.json';
 
-	// /**
-	//  * @type {{question: string, hint: string|null, answer: string}|null}
-	//  */
-	// let currentCard = null;
-
-	// /**
-	//  * @type {Array.<number>}
-	//  */
-	// let cardsList = [];
-
-	// let currentCardIndex = 0;
-
-	// let showAnswer = false;
+	let cards = writable([]);
 
 	const storedOptions = localStorage.getItem('options');
+	const storedOptionsVersion = localStorage.getItem('storedOptionsVersion');
+
+	if (!storedOptionsVersion || storedOptionsVersion !== STORED_OPTIONS_VERSION) {
+		localStorage.setItem('storedOptionsVersion', STORED_OPTIONS_VERSION);
+	}
 
 	const options = writable(
-		storedOptions
+		storedOptions && storedOptionsVersion === STORED_OPTIONS_VERSION
 			? JSON.parse(storedOptions)
 			: {
 					learnMode: false,
 					enableShuffle: false,
 					enableAutoplay: false,
+					levels: {
+						hsk1: true,
+						hsk2: true,
+						hsk3: true,
+						hsk4: true,
+						hsk5: true,
+						hsk6: true
+					},
 					saved: [],
 					state: {
 						currentCard: null,
@@ -52,6 +61,35 @@
 		$options.state.currentCardIndex = 0;
 		$options.state.currentCard = $cards[$options.state.cardsList[0]];
 	};
+
+	const checkLevels = (resetShuffle = false) => {
+		if (resetShuffle) {
+			$cards = [];
+		}
+		if ($options.levels.hsk1) {
+			$cards = hsk1;
+		}
+		if ($options.levels.hsk2) {
+			$cards = [...$cards, ...hsk2];
+		}
+		if ($options.levels.hsk3) {
+			$cards = [...$cards, ...hsk3];
+		}
+		if ($options.levels.hsk4) {
+			$cards = [...$cards, ...hsk4];
+		}
+		if ($options.levels.hsk5) {
+			$cards = [...$cards, ...hsk5];
+		}
+		if ($options.levels.hsk6) {
+			$cards = [...$cards, ...hsk6];
+		}
+
+		if (resetShuffle) {
+			toggleShuffle();
+		}
+	};
+	checkLevels();
 
 	/**
 	 * @type {*}
@@ -109,6 +147,18 @@
 	resetCards={() => {
 		$options.state.currentCardIndex = 0;
 		$options.state.currentCard = $cards[$options.state.cardsList[0]];
+		$options.levels = {
+			hsk1: true,
+			hsk2: true,
+			hsk3: true,
+			hsk4: true,
+			hsk5: true,
+			hsk6: true
+		};
+		checkLevels(true);
+	}}
+	checkLevels={() => {
+		checkLevels(true);
 	}}
 />
 <section class={`flex items-center bg-info justify-center px-5 ${$mainClass}`}>
@@ -121,7 +171,7 @@
 				<div class="card-body">
 					<div class="flex justify-between">
 						<h2 class="card-title">
-							{$options.state.currentCard.question}
+							{$options.state.currentCard.pinyin}
 						</h2>
 						<div class="animate__animated animate__shakeX">
 							<label class="swap swap-flip">
@@ -198,9 +248,9 @@
 							</label>
 						</div>
 					</div>
-					<p>{$options.state.currentCard.hint}</p>
+					<p>{$options.state.currentCard.hanzi}</p>
 					<p class="capitalize" class:hidden={!$options.state.showAnswer && !$options.learnMode}>
-						{$options.state.currentCard.answer}
+						{$options.state.currentCard.translations.join(', ')}
 					</p>
 				</div>
 			</div>
@@ -273,9 +323,9 @@
 				{#if $options.saved.length > 0}
 					{#each $options.saved as savedEntry}
 						<tr class="hover">
-							<td>{$cards.find((e) => e?.id == savedEntry)?.question}</td>
-							<td>{$cards.find((e) => e?.id == savedEntry)?.hint}</td>
-							<td>{$cards.find((e) => e?.id == savedEntry)?.answer}</td>
+							<td>{hskAll.find((e) => e?.id == savedEntry)?.pinyin}</td>
+							<td>{hskAll.find((e) => e?.id == savedEntry)?.hanzi}</td>
+							<td>{hskAll.find((e) => e?.id == savedEntry)?.translations.join(', ')}</td>
 							<th>
 								<button
 									class="btn btn-xs btn-accent btn-outline"

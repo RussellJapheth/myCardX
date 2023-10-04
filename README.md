@@ -44,8 +44,10 @@ Ensure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/)
 
     ```bash
     npm install
-    #bun install
     #pnpm install
+    #bun install
+
+    ./fetch-hsk-data.sh
     ```
 
 4. **Run the Development Server**:

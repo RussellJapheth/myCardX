@@ -67,7 +67,7 @@
 			$cards = [];
 		}
 		if ($options.levels.hsk1) {
-			$cards = hsk1;
+			$cards = [...hsk1];
 		}
 		if ($options.levels.hsk2) {
 			$cards = [...$cards, ...hsk2];

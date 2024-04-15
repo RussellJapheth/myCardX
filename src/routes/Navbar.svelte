@@ -103,7 +103,7 @@
 			>
 				<li>
 					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">Learning mode 🥹 &nbsp;</span>
+						<span class="label-text text-accent">Learning mode 🥹 &nbsp;</span>
 						<input
 							type="checkbox"
 							bind:checked={$options.learnMode}
@@ -113,7 +113,7 @@
 				</li>
 				<li>
 					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">Shuffle 🔀 &nbsp;</span>
+						<span class="label-text text-accent">Shuffle 🔀 &nbsp;</span>
 						<input
 							type="checkbox"
 							bind:checked={$options.enableShuffle}
@@ -126,7 +126,7 @@
 				</li>
 				<li>
 					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">Autoplay 🪄 &nbsp;</span>
+						<span class="label-text text-accent">Autoplay 🪄 &nbsp;</span>
 						<input
 							type="checkbox"
 							bind:checked={$options.enableAutoplay}
@@ -142,7 +142,7 @@
 				</li>
 				<li>
 					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">HSK1 &nbsp;</span>
+						<span class="label-text text-accent">HSK1 &nbsp;</span>
 						<input
 							type="checkbox"
 							bind:checked={$options.levels.hsk1}
@@ -155,7 +155,7 @@
 				</li>
 				<li>
 					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">HSK2 &nbsp;</span>
+						<span class="label-text text-accent">HSK2 &nbsp;</span>
 						<input
 							type="checkbox"
 							bind:checked={$options.levels.hsk2}
@@ -168,7 +168,7 @@
 				</li>
 				<li>
 					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">HSK3 &nbsp;</span>
+						<span class="label-text text-accent">HSK3 &nbsp;</span>
 						<input
 							type="checkbox"
 							bind:checked={$options.levels.hsk3}
@@ -181,7 +181,7 @@
 				</li>
 				<li>
 					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">HSK4 &nbsp;</span>
+						<span class="label-text text-accent">HSK4 &nbsp;</span>
 						<input
 							type="checkbox"
 							bind:checked={$options.levels.hsk4}
@@ -194,7 +194,7 @@
 				</li>
 				<li>
 					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">HSK5 &nbsp;</span>
+						<span class="label-text text-accent">HSK5 &nbsp;</span>
 						<input
 							type="checkbox"
 							bind:checked={$options.levels.hsk5}
@@ -207,7 +207,7 @@
 				</li>
 				<li>
 					<label class="label cursor-pointer">
-						<span class="label-text text-accent-content">HSK6 &nbsp;</span>
+						<span class="label-text text-accent">HSK6 &nbsp;</span>
 						<input
 							type="checkbox"
 							bind:checked={$options.levels.hsk6}
@@ -222,7 +222,7 @@
 					<div class="divider" />
 				</li>
 				<li>
-					<label class="btn mb-2 btn-sm btn-info" for="importFile">
+					<label class="btn mb-2 btn-sm btn-info capitalize" for="importFile">
 						<input
 							on:change={handleFilesSelect}
 							accept="text/json"
@@ -239,7 +239,7 @@
 						on:click={() => {
 							downloadObjectAsJson($options, 'settings');
 						}}
-						class="btn mb-2 btn-sm btn-primary"
+						class="btn mb-2 btn-sm btn-primary capitalize"
 					>
 						export
 					</button>
@@ -249,7 +249,7 @@
 						on:click={() => {
 							resetCards();
 						}}
-						class="btn btn-sm btn-accent">Start Over</button
+						class="btn btn-sm btn-accent capitalize">Start Over</button
 					>
 				</li>
 			</ul>

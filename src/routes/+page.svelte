@@ -11,20 +11,37 @@
 	import hsk5 from '$lib/json/hsk-level-5.json';
 	import hsk6 from '$lib/json/hsk-level-6.json';
 	import hskAll from '$lib/json/hsk.json';
+	import { sameMajorVersion } from '$lib';
 
 	let cards = writable([]);
 
-	const storedOptions = localStorage.getItem('options');
-	const storedOptionsVersion = localStorage.getItem('storedOptionsVersion');
+	let storedOptions;
+	try {
+		let rawOptions = localStorage.getItem('options');
 
-	if (!storedOptionsVersion || storedOptionsVersion !== STORED_OPTIONS_VERSION) {
-		localStorage.setItem('storedOptionsVersion', STORED_OPTIONS_VERSION);
+		storedOptions = rawOptions ? JSON.parse(rawOptions) : {};
+
+		// fix for older instances where the version was not stored in the options
+		if (JSON.stringify(storedOptions) !== '{}' && !storedOptions?.version) {
+			storedOptions.version = STORED_OPTIONS_VERSION;
+		}
+	} catch (error) {}
+
+	// cleanup the past 😂😂
+	if (localStorage.getItem('storedOptionsVersion')) {
+		localStorage.removeItem('storedOptionsVersion');
 	}
+	// const storedOptionsVersion = localStorage.getItem('storedOptionsVersion');
+
+	// if (!storedOptionsVersion || storedOptionsVersion !== STORED_OPTIONS_VERSION) {
+	// 	localStorage.setItem('storedOptionsVersion', STORED_OPTIONS_VERSION);
+	// }
 
 	const options = writable(
-		storedOptions && storedOptionsVersion === STORED_OPTIONS_VERSION
-			? JSON.parse(storedOptions)
+		storedOptions?.version && sameMajorVersion(storedOptions?.version, STORED_OPTIONS_VERSION)
+			? storedOptions
 			: {
+					version: STORED_OPTIONS_VERSION,
 					learnMode: false,
 					enableShuffle: false,
 					enableAutoplay: false,

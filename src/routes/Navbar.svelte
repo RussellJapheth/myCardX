@@ -1,5 +1,6 @@
 <script>
-	import { onMount } from 'svelte';
+	import { sameMajorVersion } from '$lib';
+	import { STORED_OPTIONS_VERSION } from '$lib/vars';
 
 	export let options;
 
@@ -23,16 +24,55 @@
 	 */
 	export let checkLevels;
 
-	onMount(() => {
-		let didClickMenu = localStorage.getItem('didClickMenu');
-		// if (browser) {
-		// if(!didClickMenu) {
-		// 	setTimeout(() => {
+	/**
+	 * @param {any} exportObj
+	 * @param {string} exportName
+	 */
+	function downloadObjectAsJson(exportObj, exportName) {
+		var dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportObj));
+		var downloadAnchorNode = document.createElement('a');
+		downloadAnchorNode.setAttribute('href', dataStr);
+		downloadAnchorNode.setAttribute('download', exportName + '.json');
+		document.body.appendChild(downloadAnchorNode); // required for firefox
+		downloadAnchorNode.click();
+		downloadAnchorNode.remove();
+	}
 
-		// 	}, 10000)
-		// }
-		// }
-	});
+	/**
+	 * @type {Blob}
+	 */
+	let selectedFile;
+
+	function handleFilesSelect(e) {
+		selectedFile = e.target.files[0];
+		const reader = new FileReader();
+		reader.addEventListener('load', function () {
+			if (!reader.result) {
+				alert('Invalid file!');
+				return;
+			}
+			try {
+				console.log(reader.result);
+				let importedOptions = JSON.parse(reader.result);
+				if (!importedOptions || !importedOptions.version) {
+					alert('Invalid file!');
+					return;
+				}
+				if (!sameMajorVersion(importedOptions.version, STORED_OPTIONS_VERSION)) {
+					alert('Invalid file!');
+					return;
+				}
+				$options = importedOptions;
+				alert('Import complete!');
+			} catch (error) {
+				console.log(error);
+				alert('Invalid file!');
+			}
+		});
+		reader.readAsText(selectedFile);
+
+		return;
+	}
 </script>
 
 <div class="navbar bg-base-100">
@@ -180,6 +220,29 @@
 				</li>
 				<li>
 					<div class="divider" />
+				</li>
+				<li>
+					<label class="btn mb-2 btn-sm btn-info" for="importFile">
+						<input
+							on:change={handleFilesSelect}
+							accept="text/json"
+							type="file"
+							hidden
+							class="hidden"
+							id="importFile"
+						/>
+						import
+					</label>
+				</li>
+				<li>
+					<button
+						on:click={() => {
+							downloadObjectAsJson($options, 'settings');
+						}}
+						class="btn mb-2 btn-sm btn-primary"
+					>
+						export
+					</button>
 				</li>
 				<li>
 					<button
